@@ -24,10 +24,10 @@ class Writer {
   static set_nested(obj, keys, id, value, flag) {
     keys = keys.split('.')
     if (keys.length === 1) {
-      if (flag === 'c') {
-        obj[keys[0]] = Writer.node(id, value)
-      } else if (flag === 'a') {
+      if (flag === 'a' || flag === 'i') {
         obj[keys[0]] = value
+      } else if (flag === 'c') {
+        obj[keys[0]] = Writer.node(id, value)
       } else {
         throw new Error(`Invalid flag "${flag}"`)
       }
@@ -78,7 +78,9 @@ class Writer {
   }
 
   inner(text) {
+    Writer.set_nested(this.runner, `${this.path}.inner`, null, text, 'i')
 
+    return this
   }
 
   child(name) {
@@ -118,8 +120,7 @@ class Writer {
       Writer.set_nested(this.runner, this.path, this.unique, name, 'c')
       this.unique ++
     }
-    // const node_copy = this.path
-    // this.path = `${node_copy}`
+    
     return this
   }
 
@@ -138,6 +139,7 @@ const nw = new Writer()
 nw
   .parent('MOM')
   .child('BOB')
+  .inner('I like trains')
   .parent('DAD')
   .child('TIM')
   .child('CINDY')
