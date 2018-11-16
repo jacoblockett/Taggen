@@ -120,7 +120,7 @@ class Writer {
       Writer.set_nested(this.runner, this.path, this.unique, name, 'c')
       this.unique ++
     }
-    
+
     return this
   }
 
@@ -132,16 +132,49 @@ class Writer {
     }, null, 4) + '\n')
     return this
   }
+
+  static looper(object) {
+    let product = ''
+
+    for (let property in object) {
+      const name = object[property].name
+      const attributes = Object.entries(object[property].attributes)
+      const children = Object.entries(object[property].children)
+      const inner = object[property].inner
+      const tag = `<${name}${attributes.length >= 1 ? attributes.map(attr => ` ${attr[0]}="${attr[1]}"`).join('') : ''}${children.length >= 1 ? '>\n' : ' />\n'}`
+
+      product += tag
+    }
+
+    return product
+  }
+
+  commit() {
+    if (this.product) {
+      const msg = `You can only commit once per instance of Node Writer`
+      throw new Error(msg)
+    } else {
+      this.product = Writer.looper(this.runner)
+    }
+
+    console.log('\nPRODUCT:\n' + this.product)
+    return this
+  }
 }
 
 const nw = new Writer()
 
 nw
   .parent('MOM')
+  .attr('hi', 'there')
+  .attr('amaterasu', 'sun god')
   .child('BOB')
   .inner('I like trains')
   .parent('DAD')
   .child('TIM')
   .child('CINDY')
   .sibling('HI')
+  .attr('asdf', 'fda')
+  .attr('asddf', 'fdafsdf')
   .preview()
+  .commit()
