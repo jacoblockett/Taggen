@@ -1,5 +1,6 @@
 class Writer {
-  constructor() {
+  constructor(type) {
+    this.type = type
     this.current_parent_node = ''
     this.path = ''
     this.unique = 0
@@ -29,7 +30,7 @@ class Writer {
       } else if (flag === 'c') {
         obj[keys[0]] = Writer.node(id, value)
       } else {
-        throw new Error(`Invalid flag "${flag}"`)
+        throw new Error(`Invalid flag "${flag}"\n`)
       }
     } else {
       const key = keys.shift()
@@ -45,7 +46,7 @@ class Writer {
   		for (let prop in obj) {
   			path.push(prop)
 
-  			if (obj[prop] === id) {
+  			if (obj[prop] === id && prop === 'unique') {
   				found = true
   				break
   			} else if (Object.prototype.toString.call(obj[prop]) === '[object Object]') {
@@ -61,6 +62,22 @@ class Writer {
 
   	return found ? path.slice(0, path.length - 1).join('.') : undefined
   }
+
+  static looper(obj, elements = '') {
+	for (let prop in obj) {
+		const
+			name = obj[prop].name,
+			attributes = Object.entries(obj[prop].attributes),
+			attrValues = attributes.length >= 1 ? attributes.map(attr => ` ${attr[0]}="${attr[1]}"`).join('') : '',
+			children = Object.entries(obj[prop].children),
+			inner = obj[prop].inner,
+			txtTab = Array.from(Array(2), x => ' ').join('')
+
+			elements += `<${name}${attrValues}>${inner}${children.length ? Writer.looper(obj[prop].children) : ''}</${name}>`
+	}
+
+	return elements
+}
 
   parent(name) {
     this.current_parent_node = `node${Object.keys(this.runner).length}`
@@ -128,53 +145,50 @@ class Writer {
     console.log('\nPREVIEW:\n' + JSON.stringify({
       parent: this.current_parent_node,
       current_path: this.path,
-      current_schema: this.runner
+      current_schema: this.runner,
+      product: this.product
     }, null, 4) + '\n')
     return this
   }
 
-  static looper(object) {
-    let product = ''
-
-    for (let property in object) {
-      const name = object[property].name
-      const attributes = Object.entries(object[property].attributes)
-      const children = Object.entries(object[property].children)
-      const inner = object[property].inner
-      const tag = `<${name}${attributes.length >= 1 ? attributes.map(attr => ` ${attr[0]}="${attr[1]}"`).join('') : ''}${children.length >= 1 ? '>\n' : ' />\n'}`
-
-      product += tag
-    }
-
-    return product
-  }
-
   commit() {
     if (this.product) {
-      const msg = `You can only commit once per instance of Node Writer`
+      const msg = `You can only commit once per instance of Node Writer\n`
       throw new Error(msg)
     } else {
-      this.product = Writer.looper(this.runner)
+      const beginning = this.type === 'xml'
+        ? `<?xml version="1.0" encoding="UTF-8"?>\n`
+        : this.type === 'html'
+          ? `<!DOCTYPE html>\n`
+          : ''
+      this.product = `${beginning}${Writer.looper(this.runner)}`
+      return this
     }
 
     console.log('\nPRODUCT:\n' + this.product)
     return this
   }
+
+  write(path) {
+    if (this.product) {
+      const fs = require('fs')
+
+      fs.writeFile(path, this.product, error => error && console.error(error))
+    } else {
+      const msg = `Be sure to commit before trying to write (use ".commit()")\n`
+      throw new Error(msg)
+    }
+  }
 }
 
-const nw = new Writer()
+const nw = new Writer('html')
 
 nw
-  .parent('MOM')
-  .attr('hi', 'there')
-  .attr('amaterasu', 'sun god')
-  .child('BOB')
-  .inner('I like trains')
-  .parent('DAD')
-  .child('TIM')
-  .child('CINDY')
-  .sibling('HI')
-  .attr('asdf', 'fda')
-  .attr('asddf', 'fdafsdf')
-  .preview()
+  .parent('html')
+  .child('head')
+  .sibling('body')
+  .child('div')
+  .child('p')
+  .inner('Choi Eunjeong')
   .commit()
+  .write('C:\\Users\\Jacob\\Desktop\\xml-writer\\node-writer\\newfile3.html')
