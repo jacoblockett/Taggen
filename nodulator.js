@@ -1,6 +1,6 @@
-class Writer {
+class Nodulator {
   constructor(type) {
-    this.type = type
+    this.type = type && typeof type === 'string' && type.toLowerCase()
     this.current_parent_node = ''
     this.path = ''
     this.unique = 0
@@ -28,14 +28,14 @@ class Writer {
       if (flag === 'a' || flag === 'i') {
         obj[keys[0]] = value
       } else if (flag === 'c') {
-        obj[keys[0]] = Writer.node(id, value)
+        obj[keys[0]] = Nodulator.node(id, value)
       } else {
         throw new Error(`Invalid flag "${flag}"\n`)
       }
     } else {
       const key = keys.shift()
 
-      obj[key] = Writer.set_nested(typeof obj[key] === 'undefined' ? {} : obj[key], keys.join('.'), id, value, flag)
+      obj[key] = Nodulator.set_nested(typeof obj[key] === 'undefined' ? {} : obj[key], keys.join('.'), id, value, flag)
     }
 
     return obj
@@ -73,7 +73,7 @@ class Writer {
   			inner = obj[prop].inner,
   			ind = Array.from(Array(indentation), x => '  ').join(''),
   			open = `${ind}<${name}${attrValues}>`,
-  			insides = `${inner ? `${children ? '\n' : ''}${children ? ind + ind : ''}${inner}` : ''}${children ? `\n${Writer.looper(obj[prop].children, undefined, indentation + 1)}` : ''}${children ? ind : ''}`,
+  			insides = `${inner ? `${children ? '\n' : ''}${children ? ind + ind : ''}${inner}` : ''}${children ? `\n${Nodulator.looper(obj[prop].children, undefined, indentation + 1)}` : ''}${children ? ind : ''}`,
   			close = `</${name}>\n`
 
 
@@ -84,39 +84,69 @@ class Writer {
   }
 
   parent(name) {
+    if (!name || typeof name !== 'string') {
+      const msg = `The .parent() function takes a name <string> value\n`
+      throw new Error(msg)
+    }
+
     this.current_parent_node = `node${Object.keys(this.runner).length}`
     this.path = this.current_parent_node
-    this.runner[this.current_parent_node] = Writer.node(this.unique, name)
+    this.runner[this.current_parent_node] = Nodulator.node(this.unique, name)
     this.unique ++
 
     return this
   }
 
   attr(key, value) {
-    Writer.set_nested(this.runner, `${this.path}.attributes.${key}`, null, value, 'a')
+    if ((!key || !value) || (typeof value !== 'string' || typeof value !== 'string')) {
+      const msg = `The .attr() function takes a key <string> value and a value <string> value\n`
+      throw new Error(msg)
+    }
+
+    Nodulator.set_nested(this.runner, `${this.path}.attributes.${key}`, null, value, 'a')
 
     return this
   }
 
   inner(text) {
-    Writer.set_nested(this.runner, `${this.path}.inner`, null, text, 'i')
+    if (!text || typeof text !== 'string') {
+      const msg = `The .inner() function takes a text <string> value\n`
+      throw new Error(msg)
+    }
+
+    Nodulator.set_nested(this.runner, `${this.path}.inner`, null, text, 'i')
 
     return this
   }
 
   child(name) {
-    const node_copy = this.path
-    this.path = `${node_copy}.children.node${Object.keys(Writer.return_nested(`${node_copy}.children`, this.runner)).length}`
+    if (!name || typeof name !== 'string') {
+      const msg = `The .child() function takes a name <string> value\n`
+      throw new Error(msg)
+    }
 
-    Writer.set_nested(this.runner, this.path, this.unique, name, 'c')
+    const node_copy = this.path
+    this.path = `${node_copy}.children.node${Object.keys(Nodulator.return_nested(`${node_copy}.children`, this.runner)).length}`
+
+    Nodulator.set_nested(this.runner, this.path, this.unique, name, 'c')
     this.unique ++
 
     return this
   }
 
   sibling(name, id) {
+    if (typeof name !== 'string') {
+      const msg = `The .sibling() function takes an name <string> value\n`
+      throw new Error(msg)
+    }
+
     if (id) {
-      const path = Writer.find_path(id, this.runner)
+      if (typeof id !== 'number') {
+        const msg = `The .sibling() function takes an id <number> value\n`
+        throw new Error(msg)
+      }
+
+      const path = Nodulator.find_path(id, this.runner)
 
       if (path) {
         const updated_path = path.split('.').slice(0, path.split('.').length - 1).join('.')
@@ -125,9 +155,9 @@ class Writer {
           const msg = `".sibling()" cannot be called at the parent level - use ".parent()" instead\n`
           throw new Error(msg)
         } else {
-          this.path = `${updated_path}.node${Object.keys(Writer.return_nested(updated_path, this.runner)).length}`
+          this.path = `${updated_path}.node${Object.keys(Nodulator.return_nested(updated_path, this.runner)).length}`
 
-          Writer.set_nested(this.runner, this.path, this.unique, name, 'c')
+          Nodulator.set_nested(this.runner, this.path, this.unique, name, 'c')
           this.unique ++
         }
       } else {
@@ -136,9 +166,9 @@ class Writer {
       }
     } else {
       const updated_path = this.path.split('.').slice(0, this.path.split('.').length - 1).join('.')
-      this.path = `${updated_path}.node${Object.keys(Writer.return_nested(updated_path, this.runner)).length}`
+      this.path = `${updated_path}.node${Object.keys(Nodulator.return_nested(updated_path, this.runner)).length}`
 
-      Writer.set_nested(this.runner, this.path, this.unique, name, 'c')
+      Nodulator.set_nested(this.runner, this.path, this.unique, name, 'c')
       this.unique ++
     }
 
@@ -157,7 +187,7 @@ class Writer {
 
   commit() {
     if (this.product) {
-      const msg = `You can only commit once per instance of Node Writer\n`
+      const msg = `You can only commit once per instance of Nodulator\n`
       throw new Error(msg)
     } else {
       const beginning = this.type === 'xml'
@@ -165,7 +195,7 @@ class Writer {
         : this.type === 'html'
           ? `<!DOCTYPE html>\n`
           : ''
-      this.product = `${beginning}${Writer.looper(this.runner)}`
+      this.product = `${beginning}${Nodulator.looper(this.runner)}`
       return this
     }
 
