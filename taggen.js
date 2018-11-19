@@ -99,13 +99,11 @@ class Taggen {
 
   attr(obj) {
     if (Object.prototype.toString.call(obj) !== '[object Object]') {
-      const msg `The .attr() function takes an obj <object> value\n`
+      const msg = `The .attr() function takes an obj <object> value\n`
       throw new Error(msg)
     }
-
-    for (let prop in obj) {
-      Taggen.set_nested(this.runner, `${this.path}.attributes.${prop}`, null, obj[prop], 'a')
-    }
+    
+    Taggen.set_nested(this.runner, `${this.path}.attributes`, null, obj, 'a')
 
     return this
   }
