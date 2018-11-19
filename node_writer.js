@@ -63,21 +63,25 @@ class Writer {
   	return found ? path.slice(0, path.length - 1).join('.') : undefined
   }
 
-  static looper(obj, elements = '') {
-	for (let prop in obj) {
-		const
-			name = obj[prop].name,
-			attributes = Object.entries(obj[prop].attributes),
-			attrValues = attributes.length >= 1 ? attributes.map(attr => ` ${attr[0]}="${attr[1]}"`).join('') : '',
-			children = Object.entries(obj[prop].children),
-			inner = obj[prop].inner,
-			txtTab = Array.from(Array(2), x => ' ').join('')
+  static looper(obj, elements = '', indentation = 0) {
+  	for (let prop in obj) {
+  		const
+  			name = obj[prop].name,
+  			attributes = Object.entries(obj[prop].attributes),
+  			attrValues = attributes.length >= 1 ? attributes.map(attr => ` ${attr[0]}="${attr[1]}"`).join('') : '',
+  			children = Object.entries(obj[prop].children).length,
+  			inner = obj[prop].inner,
+  			ind = Array.from(Array(indentation), x => '  ').join(''),
+  			open = `${ind}<${name}${attrValues}>`,
+  			insides = `${inner ? `${children ? '\n' : ''}${children ? ind + ind : ''}${inner}` : ''}${children ? `\n${Writer.looper(obj[prop].children, undefined, indentation + 1)}` : ''}${children ? ind : ''}`,
+  			close = `</${name}>\n`
 
-			elements += `<${name}${attrValues}>${inner}${children.length ? Writer.looper(obj[prop].children) : ''}</${name}>`
-	}
 
-	return elements
-}
+  			elements += `${open}${insides}${close}`
+  	}
+
+  	return elements
+  }
 
   parent(name) {
     this.current_parent_node = `node${Object.keys(this.runner).length}`
@@ -191,4 +195,4 @@ nw
   .child('p')
   .inner('Choi Eunjeong')
   .commit()
-  .write('C:\\Users\\Jacob\\Desktop\\xml-writer\\node-writer\\newfile3.html')
+  .write('C:\\Users\\Jacob\\Desktop\\xml-writer\\node-writer\\beta.html')
