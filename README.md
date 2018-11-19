@@ -3,7 +3,7 @@
 This is a quick, modular and chainable way to create tag reliant files such as html or xml.
 
 ```shell
-npm install tg
+npm install taggen
 ```
 
 # How to use
