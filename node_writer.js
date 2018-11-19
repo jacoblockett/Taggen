@@ -151,7 +151,7 @@ class Writer {
       current_path: this.path,
       current_schema: this.runner,
       product: this.product
-    }, null, 4) + '\n')
+    }, null, 2) + '\n')
     return this
   }
 
