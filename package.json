@@ -1,8 +1,8 @@
 {
-  "name": "nodulator",
+  "name": "taggen",
   "version": "1.0.0",
   "description": "A quick and modular way to create txt/xml/rel/etc files that rely on tags",
-  "main": "nodulator.js",
+  "main": "taggen.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

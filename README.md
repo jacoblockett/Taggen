@@ -1,9 +1,9 @@
-# Nodulator
+# Taggen
 
 This is a quick, modular and chainable way to create tag reliant files such as html or xml.
 
 ```shell
-npm install nodulator
+npm install tg
 ```
 
 # How to use
@@ -27,22 +27,22 @@ npm install nodulator
 
 ## Initializing
 
-In order to use Nodulator, you'll have to initialize it first:
+In order to use Taggen, you'll have to initialize it first:
 
 ```javascript
-const Nodulator = require('nodulator')
+const Taggen = require('tg')
 
-const nodulator = new Nodulator([type <string>])
+const tg = new Taggen([type <string>])
 ```
 
-Currently accepted types are `'html'` and `xml`. If you don't wish to use either of these, simply leave it blank.
+Currently accepted types are `'html'` and `'xml'`. If you don't wish to use either of these, simply leave it blank.
 
 ## Making Your First Parent Node
 
 #### Syntax
 
 ```javascript
-nodulator.parent(name <string>)
+tg.parent(name <string>)
 ```
 
 Name is anything you want to call the parent tag. There are no restrictions other than it needs to be a string value.
@@ -50,9 +50,9 @@ Name is anything you want to call the parent tag. There are no restrictions othe
 #### Input
 
 ```javascript
-const nodulator = new Nodulator()
+const tg = new Taggen()
 
-nodulator.parent('Parent')
+tg.parent('Parent')
 ```
 
 #### Output
@@ -66,7 +66,7 @@ nodulator.parent('Parent')
 #### Syntax
 
 ```javascript
-nodulator.attr(key <string>, value <string>)
+tg.attr(key <string>, value <string>)
 ```
 
 Attributes take two strings, the key which will be evaluated as the left-hand assignment, and the value as the right-hand assignment.
@@ -74,9 +74,9 @@ Attributes take two strings, the key which will be evaluated as the left-hand as
 #### Input
 
 ```javascript
-const nodulator = new Nodulator()
+const tg = new Taggen()
 
-nodulator
+tg
   .parent('Parent')
   .attr('key', 'value')
 ```
@@ -92,7 +92,7 @@ nodulator
 #### Syntax
 
 ```javascript
-nodulator.inner(text <string>)
+tg.inner(text <string>)
 ```
 
 The inner function takes a text value. This can be anything as long as it's a string value.
@@ -100,9 +100,9 @@ The inner function takes a text value. This can be anything as long as it's a st
 #### Input
 
 ```javascript
-const nodulator = new Nodulator()
+const tg = new Taggen()
 
-nodulator
+tg
   .parent('Parent')
   .inner('Some inner text')
 ```
@@ -121,7 +121,7 @@ ___
 #### Syntax
 
 ```javascript
-nodulator.child(name <string>)
+tg.child(name <string>)
 ```
 
 Same as tags created by the .parent() function, this function accepts a string value for however you'd like to name the child.
@@ -129,9 +129,9 @@ Same as tags created by the .parent() function, this function accepts a string v
 #### Input
 
 ```javascript
-const nodulator = new Nodulator()
+const tg = new Taggen()
 
-nodulator.child('Child')
+tg.child('Child')
 ```
 
 #### Output
@@ -146,7 +146,7 @@ ___
 #### Syntax
 
 ```javascript
-nodulator.sibling(name <string>[, id <number>])
+tg.sibling(name <string>[, id <number>])
 ```
 
 Same as tags created by the .parent() function, this function accepts a string value for however you'd like to name the sibling.
@@ -156,9 +156,9 @@ The special thing about siblings is they accept an `id` argument. If this argume
 #### Input
 
 ```javascript
-const nodulator = new Nodulator()
+const tg = new Taggen()
 
-nodulator
+tg
   .sibling('Sibling1')
   .sibling('Sibling2', 5)
 ```
@@ -175,7 +175,7 @@ nodulator
 #### Syntax
 
 ```javascript
-nodulator.preview()
+tg.preview()
 ```
 
 If you're ever lost and confused on the structure that you've created, you need to know the unique id for a specific tag, or you're just plain curious, all you have to do is call the `.preview()` method. It will print an object with some current running information wherever you decide to run it.
@@ -185,7 +185,7 @@ If you're ever lost and confused on the structure that you've created, you need 
 #### Syntax
 
 ```javascript
-nodulator.commit()
+tg.commit()
 ```
 
 When you're satisfied with what you've created and you'd like to generate a readable structure that can be appended to a file, simply call the `.commit()` method. This method is required before you attempt to write to a file.
@@ -195,7 +195,7 @@ When you're satisfied with what you've created and you'd like to generate a read
 #### Syntax
 
 ```javascript
-nodulator.write(path <string>)
+tg.write(path <string>)
 ```
 
 This function takes a path string argument and will asynchronously write your created data to a file of your choosing. Be sure to `.commit()` before attempting to write to a file, otherwise an error will be thrown.
@@ -213,9 +213,9 @@ Here's an example of a simple HTML template:
 #### Input
 
 ```javascript
-const nodulator = new Nodulator('html')
+const tg = new Taggen('html')
 
-nodulator
+tg
   .parent('html')
   .child('head')
   .child('script')

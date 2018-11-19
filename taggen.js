@@ -1,4 +1,4 @@
-class Nodulator {
+class Taggen {
   constructor(type) {
     this.type = type && typeof type === 'string' && type.toLowerCase()
     this.current_parent_node = ''
@@ -28,14 +28,14 @@ class Nodulator {
       if (flag === 'a' || flag === 'i') {
         obj[keys[0]] = value
       } else if (flag === 'c') {
-        obj[keys[0]] = Nodulator.node(id, value)
+        obj[keys[0]] = Taggen.node(id, value)
       } else {
         throw new Error(`Invalid flag "${flag}"\n`)
       }
     } else {
       const key = keys.shift()
 
-      obj[key] = Nodulator.set_nested(typeof obj[key] === 'undefined' ? {} : obj[key], keys.join('.'), id, value, flag)
+      obj[key] = Taggen.set_nested(typeof obj[key] === 'undefined' ? {} : obj[key], keys.join('.'), id, value, flag)
     }
 
     return obj
@@ -73,7 +73,7 @@ class Nodulator {
   			inner = obj[prop].inner,
   			ind = Array.from(Array(indentation), x => '  ').join(''),
   			open = `${ind}<${name}${attrValues}>`,
-  			insides = `${inner ? `${children ? '\n' : ''}${children ? ind + ind : ''}${inner}` : ''}${children ? `\n${Nodulator.looper(obj[prop].children, undefined, indentation + 1)}` : ''}${children ? ind : ''}`,
+  			insides = `${inner ? `${children ? '\n' : ''}${children ? ind + ind : ''}${inner}` : ''}${children ? `\n${Taggen.looper(obj[prop].children, undefined, indentation + 1)}` : ''}${children ? ind : ''}`,
   			close = `</${name}>\n`
 
 
@@ -91,7 +91,7 @@ class Nodulator {
 
     this.current_parent_node = `node${Object.keys(this.runner).length}`
     this.path = this.current_parent_node
-    this.runner[this.current_parent_node] = Nodulator.node(this.unique, name)
+    this.runner[this.current_parent_node] = Taggen.node(this.unique, name)
     this.unique ++
 
     return this
@@ -103,7 +103,7 @@ class Nodulator {
       throw new Error(msg)
     }
 
-    Nodulator.set_nested(this.runner, `${this.path}.attributes.${key}`, null, value, 'a')
+    Taggen.set_nested(this.runner, `${this.path}.attributes.${key}`, null, value, 'a')
 
     return this
   }
@@ -114,7 +114,7 @@ class Nodulator {
       throw new Error(msg)
     }
 
-    Nodulator.set_nested(this.runner, `${this.path}.inner`, null, text, 'i')
+    Taggen.set_nested(this.runner, `${this.path}.inner`, null, text, 'i')
 
     return this
   }
@@ -126,9 +126,9 @@ class Nodulator {
     }
 
     const node_copy = this.path
-    this.path = `${node_copy}.children.node${Object.keys(Nodulator.return_nested(`${node_copy}.children`, this.runner)).length}`
+    this.path = `${node_copy}.children.node${Object.keys(Taggen.return_nested(`${node_copy}.children`, this.runner)).length}`
 
-    Nodulator.set_nested(this.runner, this.path, this.unique, name, 'c')
+    Taggen.set_nested(this.runner, this.path, this.unique, name, 'c')
     this.unique ++
 
     return this
@@ -146,7 +146,7 @@ class Nodulator {
         throw new Error(msg)
       }
 
-      const path = Nodulator.find_path(id, this.runner)
+      const path = Taggen.find_path(id, this.runner)
 
       if (path) {
         const updated_path = path.split('.').slice(0, path.split('.').length - 1).join('.')
@@ -155,9 +155,9 @@ class Nodulator {
           const msg = `".sibling()" cannot be called at the parent level - use ".parent()" instead\n`
           throw new Error(msg)
         } else {
-          this.path = `${updated_path}.node${Object.keys(Nodulator.return_nested(updated_path, this.runner)).length}`
+          this.path = `${updated_path}.node${Object.keys(Taggen.return_nested(updated_path, this.runner)).length}`
 
-          Nodulator.set_nested(this.runner, this.path, this.unique, name, 'c')
+          Taggen.set_nested(this.runner, this.path, this.unique, name, 'c')
           this.unique ++
         }
       } else {
@@ -166,9 +166,9 @@ class Nodulator {
       }
     } else {
       const updated_path = this.path.split('.').slice(0, this.path.split('.').length - 1).join('.')
-      this.path = `${updated_path}.node${Object.keys(Nodulator.return_nested(updated_path, this.runner)).length}`
+      this.path = `${updated_path}.node${Object.keys(Taggen.return_nested(updated_path, this.runner)).length}`
 
-      Nodulator.set_nested(this.runner, this.path, this.unique, name, 'c')
+      Taggen.set_nested(this.runner, this.path, this.unique, name, 'c')
       this.unique ++
     }
 
@@ -187,7 +187,7 @@ class Nodulator {
 
   commit() {
     if (this.product) {
-      const msg = `You can only commit once per instance of Nodulator\n`
+      const msg = `You can only commit once per instance of Taggen\n`
       throw new Error(msg)
     } else {
       const beginning = this.type === 'xml'
@@ -195,7 +195,7 @@ class Nodulator {
         : this.type === 'html'
           ? `<!DOCTYPE html>\n`
           : ''
-      this.product = `${beginning}${Nodulator.looper(this.runner)}`
+      this.product = `${beginning}${Taggen.looper(this.runner)}`
       return this
     }
 
