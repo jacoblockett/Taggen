@@ -214,3 +214,5 @@ class Taggen {
     }
   }
 }
+
+module.exports = Tagger
