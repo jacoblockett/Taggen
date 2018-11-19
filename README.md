@@ -66,10 +66,10 @@ tg.parent('Parent')
 #### Syntax
 
 ```javascript
-tg.attr(key <string>, value <string>)
+tg.attr(obj <object>)
 ```
 
-Attributes take two strings, the key which will be evaluated as the left-hand assignment, and the value as the right-hand assignment.
+Attributes takes an object as its argument. Each of the passed in object's keys and values will be translated into the left-hand and right-hand assignments for the attached tag's attributes.
 
 #### Input
 
@@ -78,7 +78,10 @@ const tg = new Taggen()
 
 tg
   .parent('Parent')
-  .attr('key', 'value')
+  .attr({
+    id: 'value1',
+    class: 45
+  })
 ```
 
 #### Output
