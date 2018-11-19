@@ -1,0 +1,19 @@
+{
+  "name": "nodulator",
+  "version": "1.0.0",
+  "description": "A quick and modular way to create txt/xml/rel/etc files that rely on tags",
+  "main": "nodulator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huntinghawk1415/nodulator.git"
+  },
+  "author": "Jacob Lockett",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/huntinghawk1415/nodulator/issues"
+  },
+  "homepage": "https://github.com/huntinghawk1415/nodulator#readme"
+}

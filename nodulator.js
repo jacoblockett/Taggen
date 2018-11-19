@@ -184,15 +184,3 @@ class Writer {
     }
   }
 }
-
-const nw = new Writer('html')
-
-nw
-  .parent('html')
-  .child('head')
-  .sibling('body')
-  .child('div')
-  .child('p')
-  .inner('Choi Eunjeong')
-  .commit()
-  .write('C:\\Users\\Jacob\\Desktop\\xml-writer\\node-writer\\beta.html')
