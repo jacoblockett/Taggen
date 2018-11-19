@@ -258,8 +258,6 @@ tg
 
 ## Possible Feature Updates
 
-* `.attr()` - Adding the ability to pass in an iterable or object rather than two string values
-
 * Creating pre-defined templates such as an HTML template or an XML template through `.html()`, etc.
 
 ## Feature Requests
