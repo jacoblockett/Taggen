@@ -30,7 +30,7 @@ npm install taggen
 In order to use Taggen, you'll have to initialize it first:
 
 ```javascript
-const Taggen = require('tg')
+const Taggen = require('taggen')
 
 const tg = new Taggen([type <string>])
 ```
