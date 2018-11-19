@@ -252,6 +252,7 @@ class Taggen {
       href: options.style.toString()
     })
     options.script && tg.sibling('script').attr({
+      type: 'text/javascript',
       src: options.script.toString()
     })
 
