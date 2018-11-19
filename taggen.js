@@ -102,7 +102,12 @@ class Taggen {
       const msg = `The .attr() function takes an obj <object> value\n`
       throw new Error(msg)
     }
-    
+
+    if (Object.keys(Taggen.return_nested(this.path, this.runner).attributes).length) {
+      const msg = `You cannot call .attr() on "${Taggen.return_nested(this.path, this.runner).name}" more than once\n`
+      throw new Error(msg)
+    }
+
     Taggen.set_nested(this.runner, `${this.path}.attributes`, null, obj, 'a')
 
     return this
