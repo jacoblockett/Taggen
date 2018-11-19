@@ -1,6 +1,6 @@
 {
   "name": "taggen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A quick and modular way to create txt/xml/rel/etc files that rely on tags",
   "main": "taggen.js",
   "scripts": {
