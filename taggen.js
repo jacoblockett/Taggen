@@ -215,4 +215,4 @@ class Taggen {
   }
 }
 
-module.exports = Tagger
+module.exports = Taggen
