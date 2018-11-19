@@ -97,13 +97,10 @@ class Taggen {
     return this
   }
 
-  attr(key, value) {
-    if ((!key || !value) || (typeof value !== 'string' || typeof value !== 'string')) {
-      const msg = `The .attr() function takes a key <string> value and a value <string> value\n`
-      throw new Error(msg)
+  attr(obj) {
+    for (let prop in obj) {
+      Taggen.set_nested(this.runner, `${this.path}.attributes.${prop}`, null, obj[prop], 'a')
     }
-
-    Taggen.set_nested(this.runner, `${this.path}.attributes.${key}`, null, value, 'a')
 
     return this
   }
