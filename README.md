@@ -87,7 +87,7 @@ tg
 #### Output
 
 ```xml
-<Parent key="value"></Parent>
+<Parent id="value1" class="45"></Parent>
 ```
 
 ## Setting Inner Text
