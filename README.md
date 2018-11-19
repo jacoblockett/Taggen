@@ -16,7 +16,7 @@ npm install nodulator
 * [Making a family](#making-a-family)
   * [Children](#children)
   * [Siblings](#siblings)
-* [What in the world did I just make?](#what-in-the-world-did-i-just-make?)
+* [What in the world did I just make](#what-in-the-world-did-i-just-make)
 * [Committing](#committing)
 * [Writing a File](#writing-a-file)
 * [Caveats/Pitfalls](#caveats/pitfalls)
@@ -170,7 +170,7 @@ nodulator
 <Sibling2></Sibling2> <!--This will be attached to the tag with a unique id value of 5-->
 ```
 
-## What in the world did I just make?
+## What in the world did I just make
 
 #### Syntax
 
