@@ -97,13 +97,18 @@ class Taggen {
     return this
   }
 
-  attr(key, value) {
-    if ((!key || !value) || (typeof value !== 'string' || typeof value !== 'string')) {
-      const msg = `The .attr() function takes a key <string> value and a value <string> value\n`
+  attr(obj) {
+    if (Object.prototype.toString.call(obj) !== '[object Object]') {
+      const msg = `The .attr() function takes an obj <object> value\n`
       throw new Error(msg)
     }
 
-    Taggen.set_nested(this.runner, `${this.path}.attributes.${key}`, null, value, 'a')
+    if (Object.keys(Taggen.return_nested(this.path, this.runner).attributes).length) {
+      const msg = `You cannot call .attr() on "${Taggen.return_nested(this.path, this.runner).name}" more than once\n`
+      throw new Error(msg)
+    }
+
+    Taggen.set_nested(this.runner, `${this.path}.attributes`, null, obj, 'a')
 
     return this
   }
@@ -206,12 +211,82 @@ class Taggen {
   write(path) {
     if (this.product) {
       const fs = require('fs')
+      const stream = fs.createWriteStream(path)
 
-      fs.writeFile(path, this.product, error => error && console.error(error))
+      stream.write(this.product)
+      stream.end()
     } else {
       const msg = `Be sure to commit before trying to write (use ".commit()")\n`
       throw new Error(msg)
     }
+  }
+
+  html(path, options = {}) {
+    this.current_parent_node = ''
+    this.path = ''
+    this.unique = 0
+    this.runner = {}
+    this.product = ''
+
+    if (typeof path !== 'string' || !path.match(/.html/gi)) {
+      const msg = `Please pass in a valid path - should contain a file designated as an .html ext file\n`
+    }
+
+    if (Object.prototype.toString.call(options) !== '[object Object]') {
+      const msg = `Please make sure you pass in a valid object to the .html() method\n`
+      throw new Error(msg)
+    }
+
+    console.warn(`Warning: Calling the .html() method will overwrite any structure that may have been created before\n`)
+
+    const fs = require('fs')
+    const opn = require('opn')
+    const tg = new Taggen('html')
+
+    tg.parent('html').child('head')
+
+    options.title && tg.child('title').inner(options.title.toString())
+    options.style && tg.sibling('link').attr({
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: options.style.toString()
+    })
+    options.script && tg.sibling('script').attr({
+      type: 'text/javascript',
+      src: options.script.toString()
+    })
+
+    tg
+      .sibling('body', 1)
+      .child('div')
+      .attr({
+        class: 'container'
+      })
+      .child('h1')
+      .attr({
+        id: 'title'
+      })
+      .inner(options.title ? options.title.toString() : 'New HTML Template')
+      .sibling('p', Object.keys(options).length + 4)
+      .inner('Thank you for using Taggen! If you find an issue with this \
+              template generator, please be sure to submit an issue at \
+              <a href="https://github.com/huntinghawk1415/taggen/issues" \
+              target="_blank" rel="noopener noreferrer">\
+              https://github.com/huntinghawk1415/taggen/issues</a>.')
+      .commit()
+      .write(path)
+
+    const server = require('http').createServer()
+
+    server
+      .on('request', (request, response) => {
+        const source = fs.createReadStream(path)
+        source.pipe(response)
+      })
+      .listen(8000)
+
+    opn('http://localhost:8000')
+    console.log('Use ^C to close this generated server.')
   }
 }
 

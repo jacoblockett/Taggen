@@ -19,6 +19,7 @@ npm install taggen
 * [What in the world did I just make](#what-in-the-world-did-i-just-make)
 * [Committing](#committing)
 * [Writing a File](#writing-a-file)
+* [Predefined Templates](#predefined-templates)
 * [Caveats/Pitfalls](#caveats/pitfalls)
 * [Examples](#examples)
 * [Possible Feature Updates](#possible-feature-updates)
@@ -66,10 +67,10 @@ tg.parent('Parent')
 #### Syntax
 
 ```javascript
-tg.attr(key <string>, value <string>)
+tg.attr(obj <object>)
 ```
 
-Attributes take two strings, the key which will be evaluated as the left-hand assignment, and the value as the right-hand assignment.
+Attributes takes an object as its argument. Each of the passed in object's keys and values will be translated into the left-hand and right-hand assignments for the attached tag's attributes.
 
 #### Input
 
@@ -78,13 +79,16 @@ const tg = new Taggen()
 
 tg
   .parent('Parent')
-  .attr('key', 'value')
+  .attr({
+    id: 'value1',
+    class: 45
+  })
 ```
 
 #### Output
 
 ```xml
-<Parent key="value"></Parent>
+<Parent id="value1" class="45"></Parent>
 ```
 
 ## Setting Inner Text
@@ -200,11 +204,36 @@ tg.write(path <string>)
 
 This function takes a path string argument and will asynchronously write your created data to a file of your choosing. Be sure to `.commit()` before attempting to write to a file, otherwise an error will be thrown.
 
+## Predefined Templates
+
+### HTML:
+
+#### Syntax
+
+```javascript
+tg.html(path <string>[, options <object>])
+```
+
+Calling `.html()` allows you to quickly generate a fully defined HTML template fo you to work on. It accepts a string path to write to and an optional options argument. A couple things to note are:
+
+1. The current version of Tagger cannot manipulate the template beyond the options Object
+2. This method wipes clean the entirety of the current data structure, so use if this is the only method you're looking for
+
+#### Options
+
+Option | Type | Description
+:---: | :---: | :---:
+Title | `<String>` | Sets the document title
+Style | `<String>` | Sets the link's `href` assignment
+Script | `<String>` | Sets the script's `src` assignment
+
 ## Caveats/Pitfalls
 
 Still working on this section - standby for an update.
 
 * Siblings cannot be created on a parent tag. Parents are the highest level, and simply calling `.parent()` will create a sibling at the parent level.
+
+* Calling HTML template generator with `.html()` will overwrite any current data structure you may have
 
 ## Examples
 
@@ -255,9 +284,7 @@ tg
 
 ## Possible Feature Updates
 
-* `.attr()` - Adding the ability to pass in an iterable or object rather than two string values
-
-* Creating pre-defined templates such as an HTML template or an XML template through `.html()`, etc.
+* Predefined template for XML
 
 ## Feature Requests
 
