@@ -1,4 +1,4 @@
-class Taggen {
+module.exports = class Taggen {
   constructor(type) {
     this.type = type && typeof type === 'string' && type.toLowerCase()
     this.current_parent_node = ''
@@ -268,11 +268,7 @@ class Taggen {
       })
       .inner(options.title ? options.title.toString() : 'New HTML Template')
       .sibling('p', Object.keys(options).length + 4)
-      .inner('Thank you for using Taggen! If you find an issue with this \
-              template generator, please be sure to submit an issue at \
-              <a href="https://github.com/huntinghawk1415/taggen/issues" \
-              target="_blank" rel="noopener noreferrer">\
-              https://github.com/huntinghawk1415/taggen/issues</a>.')
+      .inner('Thank you for using Taggen! If you find an issue with this template generator, please be sure to submit an issue at <a href="https://github.com/huntinghawk1415/taggen/issues" target="_blank" rel="noopener noreferrer">https://github.com/huntinghawk1415/taggen/issues</a>.')
       .commit()
       .write(path)
 
@@ -289,5 +285,3 @@ class Taggen {
     console.log('Use ^C to close this generated server.')
   }
 }
-
-module.exports = Taggen

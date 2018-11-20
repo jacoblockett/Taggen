@@ -2,18 +2,21 @@
   "name": "taggen",
   "version": "1.0.2",
   "description": "A quick and modular way to create txt/xml/rel/etc files that rely on tags",
-  "main": "taggen.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/huntinghawk1415/nodulator.git"
+    "url": "git+https://github.com/huntinghawk1415/taggen.git"
   },
   "author": "Jacob Lockett",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/huntinghawk1415/nodulator/issues"
+    "url": "https://github.com/huntinghawk1415/taggen/issues"
   },
-  "homepage": "https://github.com/huntinghawk1415/nodulator#readme"
+  "homepage": "https://github.com/huntinghawk1415/taggen#readme",
+  "dependencies": {
+    "opn": "^5.4.0"
+  }
 }
