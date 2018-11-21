@@ -83,11 +83,8 @@ module.exports = class Taggen {
   	return elements
   }
 
-  parent(name) {
-    if (!name || typeof name !== 'string') {
-      const msg = `The .parent() function takes a name <string> value\n`
-      throw new Error(msg)
-    }
+  parent(name = 'YouForgotToPassAnArgument') {
+    name = name.toString()
 
     this.current_parent_node = `node${Object.keys(this.runner).length}`
     this.path = this.current_parent_node
@@ -113,22 +110,18 @@ module.exports = class Taggen {
     return this
   }
 
-  inner(text) {
-    if (!text || typeof text !== 'string') {
-      const msg = `The .inner() function takes a text <string> value\n`
-      throw new Error(msg)
-    }
+  inner(text = 'YouForgotToPassAnArgument') {
+    text = Object.prototype.toString.call(text) === '[object Date]'
+      ? text.toISOString()
+      : text.toString()
 
     Taggen.set_nested(this.runner, `${this.path}.inner`, null, text, 'i')
 
     return this
   }
 
-  child(name) {
-    if (!name || typeof name !== 'string') {
-      const msg = `The .child() function takes a name <string> value\n`
-      throw new Error(msg)
-    }
+  child(name = 'YouForgotToPassAnArgument') {
+    name = name.toString()
 
     const node_copy = this.path
     this.path = `${node_copy}.children.node${Object.keys(Taggen.return_nested(`${node_copy}.children`, this.runner)).length}`
@@ -139,11 +132,8 @@ module.exports = class Taggen {
     return this
   }
 
-  sibling(name, id) {
-    if (typeof name !== 'string') {
-      const msg = `The .sibling() function takes an name <string> value\n`
-      throw new Error(msg)
-    }
+  sibling(name = 'YouForgotToPassAnArgument', id) {
+    name = name.toString()
 
     if (id) {
       if (typeof id !== 'number') {
@@ -209,6 +199,11 @@ module.exports = class Taggen {
   }
 
   write(path) {
+    if (!path || typeof path !== 'string') {
+      const msg = `Please pass in a valid path\n`
+      throw new Error(msg)
+    }
+
     if (this.product) {
       const fs = require('fs')
       const stream = fs.createWriteStream(path)
@@ -228,8 +223,9 @@ module.exports = class Taggen {
     this.runner = {}
     this.product = ''
 
-    if (typeof path !== 'string' || !path.match(/.html/gi)) {
+    if (!path || typeof path !== 'string' || !path.match(/.html/gi)) {
       const msg = `Please pass in a valid path - should contain a file designated as an .html ext file\n`
+      throw new Error(msg)
     }
 
     if (Object.prototype.toString.call(options) !== '[object Object]') {
