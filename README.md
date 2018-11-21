@@ -43,10 +43,10 @@ Currently accepted types are `'html'` and `'xml'`. If you don't wish to use eith
 #### Syntax
 
 ```javascript
-tg.parent(name <string>)
+tg.parent(name <any>)
 ```
 
-Name is anything you want to call the parent tag. There are no restrictions other than it needs to be a string value.
+Name is anything you want to call the parent tag.
 
 #### Input
 
@@ -96,10 +96,10 @@ tg
 #### Syntax
 
 ```javascript
-tg.inner(text <string>)
+tg.inner(text <any>)
 ```
 
-The inner function takes a text value. This can be anything as long as it's a string value.
+Whatever you want the inside of your tag to contain.
 
 #### Input
 
@@ -125,10 +125,10 @@ ___
 #### Syntax
 
 ```javascript
-tg.child(name <string>)
+tg.child(name <any>)
 ```
 
-Same as tags created by the .parent() function, this function accepts a string value for however you'd like to name the child.
+Same as tags created by the .parent() function, this function accepts a value for however you'd like to name the child.
 
 #### Input
 
@@ -150,10 +150,10 @@ ___
 #### Syntax
 
 ```javascript
-tg.sibling(name <string>[, id <number>])
+tg.sibling(name <any>[, id <number>])
 ```
 
-Same as tags created by the .parent() function, this function accepts a string value for however you'd like to name the sibling.
+Same as tags created by the .parent() function, this function accepts a value for however you'd like to name the sibling.
 
 The special thing about siblings is they accept an `id` argument. If this argument is provided, the sibling will be attached to whichever tag is associated to that unique `id`. On top of that, the current node depth will be changed to match the recently created sibling's depth.
 
@@ -182,7 +182,7 @@ tg
 tg.preview()
 ```
 
-If you're ever lost and confused on the structure that you've created, you need to know the unique id for a specific tag, or you're just plain curious, all you have to do is call the `.preview()` method. It will print an object with some current running information wherever you decide to run it.
+If you're ever lost and confused on the structure that you've created, you need to know the unique id for a specific tag, or you're just plain curious, all you have to do is call the `.preview()` method. It will print an object with some current running information wherever you decide to call it.
 
 ## Committing
 
@@ -223,13 +223,15 @@ Calling `.html()` allows you to quickly generate a fully defined HTML template f
 
 Option | Type | Description
 :---: | :---: | :---:
-Title | `<String>` | Sets the document title
-Style | `<String>` | Sets the link's `href` assignment
-Script | `<String>` | Sets the script's `src` assignment
+title | `<String>` | Sets the document title
+style | `<String>` | Sets the link's `href` assignment
+script | `<String>` | Sets the script's `src` assignment
 
 ## Caveats/Pitfalls
 
 Still working on this section - standby for an update.
+
+* All methods listed as accepting an `<any>` value will convert the passed value into a string. One thing to note is that a passed in `[object Date]` will be converted into an ISO string.
 
 * Siblings cannot be created on a parent tag. Parents are the highest level, and simply calling `.parent()` will create a sibling at the parent level.
 
@@ -237,29 +239,26 @@ Still working on this section - standby for an update.
 
 ## Examples
 
-Here's an example of a simple HTML template:
+Here's an example of a simple HTML file:
 
 #### Input
 
 ```javascript
 const tg = new Taggen('html')
 
+//it may be visually helpful to structure the fx() calls similar to a tag-based file
 tg
   .parent('html')
-  .child('head')
-  .child('script')
-  .sibling('style')
-  .sibling('body', 1)
-  .child('div')
-  .attr('id', 'container')
-  .attr('class', 'one')
-  .child('xmp')
-  .inner(`I'm the first <p> tag`)
-  .sibling('div', 5)
-  .attr('id', 'container2')
-  .attr('class', 'two')
-  .child('xmp')
-  .inner(`I'm the second <p> tag`)
+    .child('head')
+      .child('script')
+      .sibling('style')
+    .sibling('body', 1)
+      .child('div').attr({ id: 'container', class: 'one' })
+        .child('xmp').inner(`I'm the first <p> tag`)
+      .sibling('div', 5).attr({ id: 'container2', class: 'two' })
+        .child('xmp').inner(`I'm the second <p> tag`)
+  .commit()
+  .write('path_of_choice')
 ```
 
 #### Output
@@ -285,6 +284,10 @@ tg
 ## Possible Feature Updates
 
 * Predefined template for XML
+
+* CSS Style tag support for HTML files
+
+* JS Script tag support for HTML files
 
 ## Feature Requests
 
