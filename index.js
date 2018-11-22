@@ -210,6 +210,24 @@ module.exports = class Taggen {
 
       stream.write(this.product)
       stream.end()
+
+      return stream
+    } else {
+      const msg = `Be sure to commit before trying to write (use ".commit()")\n`
+      throw new Error(msg)
+    }
+  }
+
+  write_sync(path) {
+    if (!path || typeof path !== 'string') {
+      const msg = `Please pass in a valid path\n`
+      throw new Error(msg)
+    }
+
+    if (this.product) {
+      const fs = require('fs')
+
+      fs.writeFileSync(path, this.product)
     } else {
       const msg = `Be sure to commit before trying to write (use ".commit()")\n`
       throw new Error(msg)

@@ -6,6 +6,17 @@ This is a quick, modular and chainable way to create tag reliant files such as h
 npm install taggen
 ```
 
+# Version Control
+
+Version | Description
+:---: | :---
+1.0.0 | Release
+1.0.1 | Patch: Misspellings and export issues
+1.0.2 | Patch: Error handling, README.md
+1.1.0 | Addition: Method to build a basic html file, licensing, error reporting
+1.1.1 | Patch: Default string catches
+1.2.0 | Addition: write() now returns a stream - [Writable Streams](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_writable_streams), write_sync() provides an alternate write method to write... uh... synchronously.
+
 # How to use
 
 ### Table of Contents:
@@ -196,13 +207,23 @@ When you're satisfied with what you've created and you'd like to generate a read
 
 ## Writing a File
 
-#### Syntax
+There are two ways to write a file, with streams and with a sync method.
+
+#### Stream Syntax
 
 ```javascript
 tg.write(path <string>)
 ```
 
-This function takes a path string argument and will asynchronously write your created data to a file of your choosing. Be sure to `.commit()` before attempting to write to a file, otherwise an error will be thrown.
+This function takes a path string argument and will stream write your created data to a file of your choosing. It will return a stream allowing you to use Node JS stream events. Be sure to `.commit()` before attempting to write to a file, otherwise an error will be thrown.
+
+#### Sync Syntax
+
+```javascript
+tg.write_sync(path <string>)
+```
+
+Writes your file synchronously to a file you pass in. Same as the `write()` method, make sure to `.commit()` before you attempt to write to a file.
 
 ## Predefined Templates
 
@@ -247,6 +268,7 @@ Here's an example of a simple HTML file:
 const tg = new Taggen('html')
 
 //it may be visually helpful to structure the fx() calls similar to a tag-based file
+
 tg
   .parent('html')
     .child('head')
